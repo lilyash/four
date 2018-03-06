@@ -1,6 +1,8 @@
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
+import java.io.Serializable;
 
 // чтение матрицы из потока
 public class DemoMatrix {
@@ -39,9 +41,15 @@ public class DemoMatrix {
     try{
         Matrix objA = new Matrix(4);
         InvertableMatrix objB= new InvertableMatrix(3);
+        try {
+            Scanner str = new Scanner(new FileInputStream("C:\\Users\\Student\\IdeaProjects\\First\\read.txt"));
+        }catch (IOException e){
+            System.err.println("Ошибка заполнения из файла");
+        }
     }catch (BadSizeException e){
         System.err.println("Неправильно задан размер.");
     }
+
 
     }
 }
