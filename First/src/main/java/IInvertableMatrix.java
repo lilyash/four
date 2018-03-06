@@ -1,3 +1,3 @@
 public interface IInvertableMatrix extends IMatrix {
-    void getInvertMatrix();
+    void getInvertMatrix() throws NonInvertableException;
 }
