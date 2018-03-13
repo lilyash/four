@@ -3,6 +3,7 @@ import java.util.Arrays;
 public class InvertableMatrix implements IInvertableMatrix {
     private int N;
     private double[] matrix;
+    private double[] unit;
     private double determinant;
 
     public InvertableMatrix(int N) throws BadSizeException {
@@ -11,6 +12,14 @@ public class InvertableMatrix implements IInvertableMatrix {
         }
         matrix = new double[N * N];
         this.N = N;
+        for (int i = 0; i < this.N; i++) {
+            for (int j = 0; i < this.N; j++) {
+                matrix[i * N + j] = 0;
+                if (i == j) {
+                    matrix[i * N + j] = 1;
+                }
+            }
+        }
     }
 
     @Override
@@ -92,26 +101,17 @@ public class InvertableMatrix implements IInvertableMatrix {
         }
         double step;
         double[] buffer = new double[this.N * this.N];
-        double[] change = new double[this.N];
-        for (int i = 0; i < this.N; i++) {
-            for (int j = 0; j < this.N; j++) {
-                buffer[i * N + j] = 0;
-                if (i == j) {
-                    buffer[i * N + j] = 1;
-                }
-            }
-        }
         for (int i = 0; i < this.N; i++) {
             if (this.matrix[i * N + i] == 0) {
                 for (int j = 0; j < this.N; j++) {
                     if (this.matrix[j * N + i] != 0.0) {
                         for (int k = 0; k < this.N; k++) {
-                            change[k] = this.matrix[i * N + k];
+                            unit[k] = this.matrix[i * N + k];
                             this.matrix[i * N + k] = this.matrix[j * N + k];
-                            this.matrix[j * N + k] = change[k];
-                            change[k] = buffer[i * N + k];
+                            this.matrix[j * N + k] = unit[k];
+                            unit[k] = buffer[i * N + k];
                             buffer[i * N + k] = buffer[j * N + k];
-                            buffer[j * N + k] = change[k];
+                            buffer[j * N + k] = unit[k];
                         }
                         break;
                     }

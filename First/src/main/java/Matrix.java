@@ -1,16 +1,30 @@
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Matrix implements IMatrix {
+public class Matrix implements IMatrix, Serializable {
     private int N;
     private double[] matrix;
     private double determinant;
+    private boolean flag;
 
     public Matrix(int N) throws BadSizeException {
-        if (N<=0){
+        if (N <= 0) {
             throw new BadSizeException();
+        } else {
+            this.N = N;
+            matrix = new double[N * N];
+            flag = false;
         }
-        matrix = new double[N*N];
-        this.N=N;
+    }
+
+    public Matrix(Matrix matrix) {
+        this.N = matrix.N;
+        this.flag = matrix.flag;
+        this.determinant = matrix.determinant;
+        this.matrix = new double[this.N * this.N];
+        for (int i = 0; i < N * N; i++) {
+            this.matrix[i] = matrix.matrix[i];
+        }
     }
 
     @Override
@@ -31,31 +45,39 @@ public class Matrix implements IMatrix {
         return result;
     }
 
-    public double getElement(int findex, int sindex) {
-        return matrix[N*findex+sindex];
+
+    public double getElement(int findex, int sindex) throws OutOfBorderException {
+        if (findex >= this.N || sindex >= this.N) {
+            throw new OutOfBorderException();
+        }
+        return matrix[N * findex + sindex];
     }
 
-    public void setElement(int findex, int sindex, double element) {
-        matrix[N*findex+sindex]= element;
+    public void setElement(int findex, int sindex, double element)throws OutOfBorderException, NonInvertableException {
+        if (findex >= this.N || sindex >= this.N) {
+            throw new OutOfBorderException();
+        }
+        matrix[N * findex + sindex] = element;
+        flag=false;
     }
 
     public double determinant() {
-        double det=determinant;
-        boolean flag=false;
-        if(!flag) {
-            det=1;
+        double det = determinant;
+        boolean flag = false;
+        if (!flag) {
+            det = 1;
             int h = 0;
             double buf2;
-            double[] buf = new double[N*N];
-            for(int i=0; i<N*N; i++){
-                buf[i]=matrix[i];
+            double[] buf = new double[N * N];
+            for (int i = 0; i < N * N; i++) {
+                buf[i] = matrix[i];
             }
             for (int i = 1; i < N; i++) {
                 if (buf[h] == 0.0) {
-                    for(int k=0; k<N; k++){
-                        if(buf[k*N+h]!=0){
-                            for(int t=0; t<N; t++){
-                                buf[h+t]=buf[h+t]+buf[k*N+h+t];
+                    for (int k = 0; k < N; k++) {
+                        if (buf[k * N + h] != 0) {
+                            for (int t = 0; t < N; t++) {
+                                buf[h + t] = buf[h + t] + buf[k * N + h + t];
                             }
                             break;
                         }
@@ -80,4 +102,5 @@ public class Matrix implements IMatrix {
     public int getN() {
         return N;
     }
+
 }
