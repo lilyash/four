@@ -61,7 +61,7 @@ public class Matrix implements IMatrix, Serializable {
         flag=false;
     }
 
-    public double determinant() {
+    public double getDeterminant() {
         double det = determinant;
         boolean flag = false;
         if (!flag) {
@@ -75,7 +75,7 @@ public class Matrix implements IMatrix, Serializable {
             for (int i = 1; i < N; i++) {
                 if (buf[h] == 0.0) {
                     for (int k = 0; k < N; k++) {
-                        if (buf[k * N + h] != 0) {
+                        if (buf[k * N + h] != 0.0) {
                             for (int t = 0; t < N; t++) {
                                 buf[h + t] = buf[h + t] + buf[k * N + h + t];
                             }
@@ -83,12 +83,15 @@ public class Matrix implements IMatrix, Serializable {
                         }
                     }
                 }
-                for (int q = i; q < N; q++) {
-                    buf2 = buf[h + (q - i + 1) * N];
-                    for (int j = 0; j < N; j++) {
-                        buf[j + N * q] = buf[j + N * q] - (buf[j + (i - 1) * N] / buf[h] * buf2);
+                if(buf[h] !=0.0){
+                    for (int q = i; q < N; q++) {
+                        buf2 = buf[h + (q - i + 1) * N];
+                        for (int j = 0; j < N; j++) {
+                            buf[j + N * q] = buf[j + N * q] - (buf[j + (i - 1) * N] / buf[h] * buf2);
+                        }
                     }
                 }
+
                 det *= buf[h];
                 h += (N + 1);
             }
@@ -103,4 +106,34 @@ public class Matrix implements IMatrix, Serializable {
         return N;
     }
 
+    public void swapLines(int findex, int sindex) throws OutOfLineException {
+        if (findex >= N || sindex >= N) {
+            for (int i = 0; i < N; i++) {
+                throw new OutOfLineException();
+            }
+            double step;
+            for (int i = 0; i < N; i++) {
+                step = matrix[findex * N + i];
+                matrix[findex * N + i] = matrix[sindex * N + i];
+                matrix[sindex * N + i] = step;
+            }
+        }
+    }
+        public void addLine(int subInd, int resInd, double coeff) throws OutOfLineException{
+        if (subInd >= N || resInd >= N) {
+            throw new OutOfLineException();
+        }
+        for (int i = 0; i < N; i++) {
+            matrix[resInd * N + i] += matrix[subInd * N + i]*coeff;
+        }
+    }
+
+    public void multLine(int index, double coeff) throws OutOfLineException{
+        if(index>=N){
+            throw new OutOfLineException();
+        }
+        for(int i=0; i< N; i++){
+            matrix[index*N + i]*=coeff;
+        }
+    }
 }

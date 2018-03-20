@@ -1,24 +1,23 @@
 import java.util.Arrays;
+import java.io.Serializable;
+import java.util.Objects;
 
-public class InvertableMatrix implements IInvertableMatrix {
+public class InvertableMatrix extends Matrix implements IInvertableMatrix, Serializable {
     private int N;
     private double[] matrix;
     private double[] unit;
     private double determinant;
 
-    public InvertableMatrix(int N) throws BadSizeException {
-        if (N <= 0) {
-            throw new BadSizeException();
-        }
-        matrix = new double[N * N];
-        this.N = N;
-        for (int i = 0; i < this.N; i++) {
-            for (int j = 0; i < this.N; j++) {
-                matrix[i * N + j] = 0;
-                if (i == j) {
-                    matrix[i * N + j] = 1;
-                }
-            }
+    public InvertableMatrix(int N) throws BadSizeException, OutOfBorderException, NonInvertableException {
+      super (N);
+      for(int i=0; i< N; i++){
+      super.setElement(i, i, 1);
+      }
+    }
+    public InvertableMatrix(Matrix matrix) throws NonInvertableException{
+        super(matrix);
+        if(matrix.getDeterminant()==0.0){
+            throw new NonInvertableException();
         }
     }
 
@@ -48,9 +47,44 @@ public class InvertableMatrix implements IInvertableMatrix {
     public double getElement(int findex, int sindex) {
         return matrix[N * findex + sindex];
     }
-
-    public void setElement(int findex, int sindex, double element) {
-        matrix[N * findex + sindex] = element;
+    @Override
+    public void setElement(int findex, int sindex, double element) throws OutOfBorderException, NonInvertableException {
+        double buf = this.getElement(findex, sindex);
+        super.setElement(findex, sindex, element);
+        if (this.getDeterminant() == 0.0) {
+           super.setElement(findex, sindex, buf);
+           throw new NonInvertableException();
+        }
+    }
+    public IInvertableMatrix invertableMatrix() throws BadSizeException, OutOfBorderException, NonInvertableException, OutOfLineException {
+        double coeff1, coeff2;
+        InvertableMatrix res= new InvertableMatrix(this.getN());
+        InvertableMatrix buf = new InvertableMatrix(this);
+        for(int i=0; i< this.getN(); i++){
+            if(buf.getElement(i,i)==0){
+                for(int j=0; j< this.getN(); j++){
+                    if(buf.getElement(j,i)!=0.0){
+                        for(int k=0; k< this.getN(); k++){
+                            buf.swapLines(i,j);
+                        }
+                        break;
+                    }
+                }
+            }
+            res.multLine(i, 1/buf.getElement(i,i));
+            buf.multLine(i, 1/buf.getElement(i,i));
+            for(int j=i+1; j<this.getN(); j++){
+                res.addLine(i, j, -buf.getElement(j, i));
+                buf.addLine(i, j, -buf.getElement(j, i));
+            }
+        }
+        for(int i=this.getN()-1; i>=0; i--){
+            for(int j=i-1; j>=0; j--){
+                res.addLine(i, j, -buf.getElement(j, i));
+                buf.addLine(i, j, -buf.getElement(j, i));
+            }
+        }
+        return res;
     }
 
     public double determinant() {
@@ -141,4 +175,5 @@ public class InvertableMatrix implements IInvertableMatrix {
         }
         this.matrix = buffer;
     }
+
 }
