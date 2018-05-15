@@ -119,7 +119,8 @@ public class Matrix implements IMatrix, Serializable {
             }
         }
     }
-        public void addLine(int subInd, int resInd, double coeff) throws OutOfLineException{
+
+    public void addLine(int subInd, int resInd, double coeff) throws OutOfLineException{
         if (subInd >= N || resInd >= N) {
             throw new OutOfLineException();
         }
@@ -135,5 +136,39 @@ public class Matrix implements IMatrix, Serializable {
         for(int i=0; i< N; i++){
             matrix[index*N + i]*=coeff;
         }
+    }
+
+    public double getDetModify() throws OutOfBorderException, OutOfLineException {
+        double res=this.determinant;
+        if(!this.flag) {
+            res = 1;
+            Matrix buf = new Matrix(this);
+            for (int i = 0; i < N; i++) {
+                if (buf.getElement(i, i) == 0.0) {
+                    int q = i;
+                    boolean flags = true;
+                    while (flags) {
+                        if (q < N && buf.getElement(q, i) != 0.0) {
+                            buf.addLine(q, i, 1);
+                            flags = false;
+                        }
+                        q++;
+                        if (q > N) {
+                            flags = false;
+                            res = 0;
+                        }
+                    }
+                }
+                if (res == 0) {
+                    break;
+                }
+                for (int j = i + 1; j < N; j++) {
+                    buf.addLine(i, j, -(buf.getElement(j, i) / buf.getElement(i, i)));
+                }
+                res *= buf.getElement(i, i);
+            }
+            flag = true;
+        }
+        return res;
     }
 }
