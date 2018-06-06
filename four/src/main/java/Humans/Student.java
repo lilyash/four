@@ -15,13 +15,6 @@ public class Student extends Human {
         this.specialization = specialization;
     }
 
-    public Student(Human Jhonny, String university, String faculty, String specialization) {
-        super(Jhonny);
-        this.specialization = specialization;
-        this.university = university;
-        this.faculty = faculty;
-    }
-
     public Student(Student Vasya) throws BadYearException {
         super(Vasya);
         this.faculty = Vasya.faculty;

@@ -6,6 +6,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class LambdaRunner {
+    public static <T,R> R run(Function<T,R> lambda, T arg) {
+        return lambda.apply(arg);
+    }
 
     public static Object checkStringLambda(Function<String, ?> lambda, String string){
         return lambda.apply(string);

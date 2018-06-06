@@ -57,6 +57,9 @@ public class Human {
     public int getYear(){
         return year;
     }
+    public int getAge(){
+        return CURRENT_YEAR - this.year;
+    }
 
     public void setYear(int year)throws BadYearException{
         if(year<0 || year>CURRENT_YEAR){

@@ -51,15 +51,12 @@ public class LambdaDemo {
         if (human == null) {
             return null;
         }
-        return Human.CURRENT_YEAR - human.getYear();
+        return human.getAge();
     };
 
-    public static final BiPredicate<? extends Human, ? extends Human> compareSurname = (human1, human2) -> {
-        if (human1 == null || human2 == null) {
-            return false;
-        }
-        return human1.getSurname().equals(human2.getSurname());
-    };
+    public static final BiPredicate<? extends Human, ? extends Human> compareSurname = (human1, human2) ->
+        human1 != null && human2 != null && human1.getSurname().equals(human2.getSurname());
+
 
     public static final Function<? extends Human, String> getSurnameNamePatronymic = human -> {
         if (human == null) {
