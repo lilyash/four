@@ -16,6 +16,13 @@ public class Matrix implements IMatrix, Serializable {
             flag = false;
         }
     }
+    public Matrix(double ...arg ) throws BadSizeException {
+            this.N = (int) Math.sqrt(arg.length);
+            this.matrix = new double[N * N];
+            this.flag = false;
+            System.arraycopy(arg, 0, this.matrix, 0, arg.length);
+    }
+
 
     public Matrix(Matrix matrix) {
         this.N = matrix.N;

@@ -5,14 +5,20 @@ import static org.testng.Assert.*;
 public class InvertTest {
 
 @DataProvider
-
 public static Object[][] testGetDeterminantData() {
     return new Object[][]{
-            {1, 5, 7, 8, 7, 8, 7, 0, 1, -96.0},
+            { new double[]{1, 5, 7, 8, 7, 8, 7, 0, 1}, -96.0},
             {2, 2, 3, 1, 4, 2, 1, 7, 1, -9.0},
             {0, 0, 1, 4, 0, 1, 5, 2, 1, 8.0},
             {1, 0, 0, 0, 1, 0, 0, 0, 1, 1},
 
+    };
+}
+
+@DataProvider
+public static Object[][] testGetDeterminant() {
+    return new Object[][]{
+            { new double[]{1, 5, 7, 8, 7, 8, 7, 0, 1}, -96.0}
     };
 }
 
@@ -38,21 +44,9 @@ public static void testSetAndGetElement() throws BadSizeException, NonInvertable
 }
 
 @Test (dataProvider = "testGetDeterminant")
-public static void testGetDeterminant(double one, double two, double three, double four, double five, double six,
-                                      double seven, double eight, double nine, double result) throws BadSizeException,
-        OutOfBorderException, NonInvertableException {
-
-    Matrix obj = new Matrix(3);
-    obj.setElement(0, 0, one);
-    obj.setElement(0, 1, two);
-    obj.setElement(0, 2, three);
-    obj.setElement(1, 0, four);
-    obj.setElement(1, 1, five);
-    obj.setElement(1, 2, six);
-    obj.setElement(2, 0, seven);
-    obj.setElement(2, 1, eight);
-    obj.setElement(2, 2, nine);
-    assertEquals(obj.getDeterminant(), result, 0.001);
+public static void testGetDeterminant(double[] arg, double expected) throws BadSizeException {
+    Matrix obj = new Matrix(arg);
+    assertEquals(obj.getDeterminant(), expected, 1e-5);
 }
 
 @Test
@@ -98,6 +92,7 @@ public static void testInvertMatrix() throws BadSizeException, NonInvertableExce
     assertEquals(fim.invertableMatrix(), fimres);
     assertEquals(sim.invertableMatrix(), simres);
 }
+
 
 
 }
