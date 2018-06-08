@@ -52,6 +52,16 @@ public static void testGetDeterminant(double[] arg, double expected) throws BadS
     assertEquals(obj.getDeterminant(), expected, 1e-5);
 }
 
+
+@Test (dataProvider = "testGetDeterminant")
+public static void testGetInverted(double[] arg, double det) throws MatrixException {
+    InvertableMatrix obj = new InvertableMatrix(new Matrix (arg));
+    InvertableMatrix inverted = (InvertableMatrix) obj.getInvertMatrix();
+    assertNotNull(inverted);
+    assertEquals(obj.mult(inverted), new InvertableMatrix(obj.getN()));
+}
+
+
 @Test(enabled = false)
 public static void testInvertMatrix() throws MatrixException {
     InvertableMatrix fim = new InvertableMatrix(2);

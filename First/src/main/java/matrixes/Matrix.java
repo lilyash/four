@@ -41,12 +41,16 @@ public class Matrix implements IMatrix, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof Matrix)) return false;
 
         Matrix matrix1 = (Matrix) o;
 
         if (N != matrix1.N) return false;
-        return Arrays.equals(matrix, matrix1.matrix);
+        boolean flag = true;
+        for (int i=0; flag && (i < matrix.length); i++) {
+            flag = Math.abs(matrix[i] - matrix1.matrix[i]) < 1e-6;
+        }
+        return flag;
     }
 
     @Override
@@ -181,5 +185,29 @@ public class Matrix implements IMatrix, Serializable {
             flag = true;
         }
         return res;
+    }
+
+    public Matrix mult(IMatrix matrix) throws MatrixException {
+        if (N != matrix.getN())  {
+            throw new OutOfBorderException();
+        }
+        Matrix res = new Matrix(N);
+        for(int i=0; i < N; i++) {
+            for (int j=0; j < N; j++) {
+                double sum = 0.0;
+                for(int k=0; k < N; k++) {
+                    sum += getElement(i,k)*matrix.getElement(k,j);
+                }
+                res.setElement(i,j, sum);
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        return "Matrix{" +
+                "matrix=" + Arrays.toString(matrix) +
+                '}';
     }
 }
